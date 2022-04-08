@@ -20,4 +20,15 @@ public class Products {
     private Double costOfProduction;
     private Double proposedRetailPrice;
 
+    @Override
+    public String toString() {
+        return "Products{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", productDescription='" + productDescription + '\'' +
+                ", totalQuantity=" + totalQuantity +
+                ", costOfProduction=" + costOfProduction +
+                ", proposedRetailPrice=" + proposedRetailPrice +
+                '}';
+    }
 }

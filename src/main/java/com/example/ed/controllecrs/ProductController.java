@@ -34,6 +34,11 @@ public class ProductController {
         Products product_=productService.createProduct(product);
         return new ResponseEntity<>(product_,HttpStatus.CREATED);
     }
+    @PostMapping("updateProduct")
+    public ResponseEntity<Products> createProduct(@RequestBody Products product){
+        productService.saveProduct(product);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
     //configurations
     @GetMapping("getAllConfigs")
     public ResponseEntity<List<Configurations>> getConfigs(){

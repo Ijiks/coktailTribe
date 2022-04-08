@@ -17,4 +17,8 @@ public interface ProductService {
     List<Orders> getAllOrder();
 
     Orders processOrder(OrderModel order_);
+
+    void saveProduct(Products product);
 }
+
+

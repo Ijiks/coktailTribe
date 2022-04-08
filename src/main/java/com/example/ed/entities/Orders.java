@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -14,9 +13,10 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderNumber;
-    @OneToMany
-    private List<Products> orderContent;
     private Double costOfProduction;
     private Double proposedRetailPrice;
     private Double calculatedProfit;
+    @Lob
+    @Column(name="CONTENT", length=800)
+    private String orderContent;
 }
