@@ -15,6 +15,7 @@ public class subCategories {
     private String name;
     private String description;
     private Double quantity;
+    private String abv;
     private Double basePrice;
     @ManyToOne
     private Categories category;
