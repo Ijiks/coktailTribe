@@ -42,5 +42,5 @@ public interface ConfigurationService {
 
     Configurations getConfigByName(String transport_rate);
 
-    void createSubDetailsList(List<Details> details_);
+    List<Details> createSubDetailsList(List<Details> details_);
 }

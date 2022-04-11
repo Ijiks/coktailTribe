@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -39,7 +40,6 @@ public class ProductConfigurationImplementation implements ProductService {
                 subCategories subCategory=configurationService.getSubCategoryById(p.getId());
                 Double customPrice=this.calculateUnitPrice(subCategory,p.getQuantity());
                 Details detail_=new Details();
-                detail_.setProduct(product);
                 totalPrice+=customPrice;
                 detail_.setPrice(customPrice);
                 detail_.setQuantity(p.getQuantity());
@@ -55,22 +55,25 @@ public class ProductConfigurationImplementation implements ProductService {
         product.setProductDescription(productModel.getProductDescription());
         product.setCostOfProduction(totalPrice);
         product.setTotalQuantity(totalQuantity);
+        product.setContent(this.saveDetails(productContent));
          this.saveProduct(product);
-            this.saveDetails(productContent);
+
 
         return product;
     }
 
-   @Async
-    public void saveDetails(List<Details> details_){
+
+    public List<Details> saveDetails(List<Details> details_){
         log.info("Saving Detail(s): {}",details_);
+       List<Details> productDetails;
         try {
-           configurationService.createSubDetailsList(details_);
+          productDetails=configurationService.createSubDetailsList(details_);
         }
          catch (Exception e){
+             productDetails=null;
             log.error("Error Saving Detail(s) Error: {}",e.getMessage());
          }
-
+     return productDetails;
     }
     //saving a single product
     @Async
@@ -116,7 +119,7 @@ public class ProductConfigurationImplementation implements ProductService {
         order.setProposedRetailPrice(Math.ceil(proposedRetailPrice));
         Double calculatedProfit=Math.ceil(proposedRetailPrice-costOfProduction);
         order.setCalculatedProfit(calculatedProfit);
-
+        order.setCreatedAt(LocalDateTime.now());
       return this.saveOrder(order);
     }
 

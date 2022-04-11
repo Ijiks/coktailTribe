@@ -106,8 +106,8 @@ public class ConfigurationServiceImplementation implements ConfigurationService 
         subCategory.saveAll(subCategories);
 
     }
-    public void createSubDetailsList(List<Details> detailsList){
-        details.saveAll(detailsList);
+    public List<Details> createSubDetailsList(List<Details> detailsList){
+        return  details.saveAll(detailsList);
     }
 
 

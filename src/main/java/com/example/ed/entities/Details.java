@@ -19,8 +19,7 @@ public class Details {
 
     @ManyToOne
     private subCategories subCategory;
-    @ManyToOne
-    private Products product;
+
 
 
     public Details(Long id, Double quantity, Double price, String name, String description) {

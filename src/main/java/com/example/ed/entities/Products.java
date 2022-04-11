@@ -19,6 +19,8 @@ public class Products {
     private Double totalQuantity;
     private Double costOfProduction;
     private Double proposedRetailPrice;
+    @OneToMany
+    private List<Details> content;
 
     @Override
     public String toString() {

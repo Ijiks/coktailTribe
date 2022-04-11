@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,4 +20,5 @@ public class Orders {
     @Lob
     @Column(name="CONTENT", length=800)
     private String orderContent;
+    private LocalDateTime createdAt;
 }
