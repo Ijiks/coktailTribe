@@ -4,6 +4,7 @@ import com.example.ed.entities.Configurations;
 import com.example.ed.entities.Orders;
 import com.example.ed.entities.Products;
 import com.example.ed.models.OrderModel;
+import com.example.ed.models.PaymentModel;
 import com.example.ed.models.ProductModel;
 import com.example.ed.services.ConfigurationService;
 import com.example.ed.services.ProductService;
@@ -61,5 +62,12 @@ public class ProductController {
         Orders order=productService.processOrder(order_);
         return new ResponseEntity<>(order,HttpStatus.CREATED);
     }
+    @PostMapping("customPayment")
+    public ResponseEntity<PaymentModel> createProduct(@RequestBody PaymentModel paymentModel){
+        PaymentModel payment=productService.makePayment(paymentModel);
+        return new ResponseEntity<>(payment,HttpStatus.CREATED);
+    }
+
+
 
 }

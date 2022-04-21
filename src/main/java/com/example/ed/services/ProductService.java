@@ -3,6 +3,7 @@ package com.example.ed.services;
 import com.example.ed.entities.Orders;
 import com.example.ed.entities.Products;
 import com.example.ed.models.OrderModel;
+import com.example.ed.models.PaymentModel;
 import com.example.ed.models.ProductModel;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ public interface ProductService {
     Orders processOrder(OrderModel order_);
 
     void saveProduct(Products product);
+
+    PaymentModel makePayment(PaymentModel paymentModel);
 }
 
 
