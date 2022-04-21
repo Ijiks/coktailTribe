@@ -21,4 +21,5 @@ public class Orders {
     @Column(name="CONTENT", length=800)
     private String orderContent;
     private LocalDateTime createdAt;
+    private String status;
 }
