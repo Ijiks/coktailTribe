@@ -16,6 +16,7 @@ public class Orders {
     private Long orderNumber;
     private Double costOfProduction;
     private Double proposedRetailPrice;
+    private Double balance;
     private Double calculatedProfit;
     @Lob
     @Column(name="CONTENT", length=800)

@@ -8,6 +8,6 @@ import lombok.Setter;
 public class PaymentModel {
     private Long[] orderId;
     private Double amount;
-    private Number mobileNumber;
+    private String mobileNumber;
     private String paymentRef;
 }

@@ -19,7 +19,7 @@ public class Payment {
     private String mpesaRef;
     private String status;
     private String paymentType;
-    private Number msisdn;
+    private String msisdn;
     private Double amount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

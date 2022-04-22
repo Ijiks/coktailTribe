@@ -192,7 +192,8 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
         return payment1;
     }
     //transaction
-    private Transactions saveTransaction(Transactions transaction){
+    @Async
+     void saveTransaction(Transactions transaction){
         Transactions transaction1=new Transactions();
         try {
             log.info("Saving transaction .. ");
@@ -201,7 +202,6 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
         }catch (Exception e){
             log.info("An error occurred on saving transaction ");
         }
-        return transaction1;
     }
 
 
@@ -222,36 +222,52 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
         }catch (Exception e){
             log.warn("Error Saving payment : {}",e.getMessage());
         }
+        Long[] ids=paymentModel.getOrderId();
+        log.info("working ids: {}",ids);
         for (Long orderId:
-            paymentModel.getOrderId()) {
+                ids) {
+            log.info("Order : {}",orderId);
             Orders order=this.getOrderById(orderId);
-            Double orderValue=order.getProposedRetailPrice();
+            Double orderValue;
+            if(order.getBalance()==null){
+               orderValue =order.getProposedRetailPrice();
+            }else {
+                orderValue =order.getBalance();
+            }
+            if (orderValue<0){
+                break;
+            }
             Double amountToProcess;
             String transactionType;
             String orderStatus;
             Double closingBalance;
+
+            log.info("working amount {}",workingAmount);
             if (workingAmount>0){
                 if (workingAmount>orderValue) {
+                    log.info("full repayment");
                     amountToProcess=orderValue;
                     transactionType="FULL-PAYMENT";
                     orderStatus="PAYMENT-CLEARED";
                     closingBalance=0.0;
-                    workingAmount=-orderValue;
+                    workingAmount=workingAmount-amountToProcess;
                 }else {
+                    log.info("partial repayment");
                     amountToProcess=workingAmount;
                     transactionType="PARTIAL-PAYMENT";
                     orderStatus="PAYMENT-PARTIALLY-CLEARED";
-                    closingBalance=order.getProposedRetailPrice()-amountToProcess;
+                    closingBalance=orderValue-amountToProcess;
                     workingAmount=0.0;
                 }
                Transactions transaction=new Transactions();
                 transaction.setPayment(workingPayment);
                 transaction.setTransactionType(transactionType);
-                transaction.setOpeningBalance(order.getProposedRetailPrice());
+                transaction.setOpeningBalance(orderValue);
                 transaction.setClosingBalance(closingBalance);
                 transaction.setOrder(order);
                 transaction.setCreatedAt(LocalDateTime.now());
                 order.setStatus(orderStatus);
+                order.setBalance(transaction.getClosingBalance());
                 try {
                     this.saveTransaction(transaction);
                 }catch (Exception e){
@@ -265,6 +281,7 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
                 }
 
             }else {
+                log.info("error amount less than zero");
                 break;
             }
 
