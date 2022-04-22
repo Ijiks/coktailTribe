@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 @Service
@@ -180,6 +181,15 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
     }
 
     //payment
+    public List<Payment> findAllPayments(){
+        return paymentRepo.findAll();
+    }
+    public Optional<Payment> findPaymentByRef(String ref){
+        return paymentRepo.findByMpesaRef(ref);
+    }
+    public Payment findPaymentById(Long id){
+        return paymentRepo.findById(id).get();
+    }
     private Payment savePayment(Payment payment){
         Payment payment1=new Payment();
         try {
@@ -207,20 +217,29 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
 
     //custom payment
     public PaymentModel makePayment(PaymentModel paymentModel){
-        Double workingAmount=paymentModel.getAmount();
-        Payment payment=new Payment();
-        payment.setPaymentType("EXPRESS");
-        payment.setAmount(paymentModel.getAmount());
-        payment.setMsisdn(paymentModel.getMobileNumber());
-        payment.setMpesaRef(paymentModel.getPaymentRef());
-        payment.setStatus("NEW");
-        payment.setCreatedAt(LocalDateTime.now());
-        payment.setUpdatedAt(LocalDateTime.now());
-        Payment workingPayment = null;
-        try {
-            workingPayment=this.savePayment(payment);
-        }catch (Exception e){
-            log.warn("Error Saving payment : {}",e.getMessage());
+        //check payment
+        Optional<Payment> oldPayment=this.findPaymentByRef(paymentModel.getPaymentRef());
+        Double workingAmount;
+        Payment workingPayment;
+        if (oldPayment.isPresent()){
+            workingPayment=oldPayment.get();
+            workingAmount=workingPayment.getBalance();
+
+        }else {
+           workingAmount = paymentModel.getAmount();
+            Payment payment = new Payment();
+            payment.setPaymentType("EXPRESS");
+            payment.setAmount(paymentModel.getAmount());
+            payment.setMsisdn(paymentModel.getMobileNumber());
+            payment.setMpesaRef(paymentModel.getPaymentRef());
+            payment.setStatus("NEW");
+            payment.setCreatedAt(LocalDateTime.now());
+            workingPayment = null;
+            try {
+                workingPayment = this.savePayment(payment);
+            } catch (Exception e) {
+                log.warn("Error Saving payment : {}", e.getMessage());
+            }
         }
         Long[] ids=paymentModel.getOrderId();
         log.info("working ids: {}",ids);
@@ -286,6 +305,12 @@ public List<Orders> getAllOrder(){return orderRepo.findAll();}
             }
 
         }
+        workingPayment.setBalance(workingAmount);
+        workingPayment.setUpdatedAt(LocalDateTime.now());
+        if (workingPayment.getBalance()>0){
+            workingPayment.setStatus("SUSPENSE");
+        }
+        paymentRepo.save(workingPayment);
 
 
         return paymentModel;

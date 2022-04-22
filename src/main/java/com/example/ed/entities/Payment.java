@@ -21,6 +21,7 @@ public class Payment {
     private String paymentType;
     private String msisdn;
     private Double amount;
+    private Double balance;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

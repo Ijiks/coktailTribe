@@ -2,6 +2,7 @@ package com.example.ed.controllecrs;
 
 import com.example.ed.entities.Configurations;
 import com.example.ed.entities.Orders;
+import com.example.ed.entities.Payment;
 import com.example.ed.entities.Products;
 import com.example.ed.models.OrderModel;
 import com.example.ed.models.PaymentModel;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("products")
@@ -67,7 +69,21 @@ public class ProductController {
         PaymentModel payment=productService.makePayment(paymentModel);
         return new ResponseEntity<>(payment,HttpStatus.CREATED);
     }
-
+    @PostMapping("findPaymentById")
+    public ResponseEntity<Payment> findPaymentById(@RequestBody Long id){
+        Payment payment=productService.findPaymentById(id);
+        return new ResponseEntity<>(payment,HttpStatus.CREATED);
+    }
+    @PostMapping("findPaymentByRef")
+    public ResponseEntity<Payment> findPaymentByRef(@RequestBody String ref){
+        Payment payment=productService.findPaymentByRef(ref).get();
+        return new ResponseEntity<>(payment,HttpStatus.CREATED);
+    }
+    @GetMapping("findAllPayment")
+    public ResponseEntity<List<Payment>> findAllPayment(){
+        List<Payment> payment=productService.findAllPayments();
+        return new ResponseEntity<>(payment,HttpStatus.CREATED);
+    }
 
 
 }
